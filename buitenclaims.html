@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BuitenClaims — Evidence-first claims review for cross-border care</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --buiten-bg: #F8FAFC;
+    --buiten-surface: #FFFFFF;
+    --buiten-text: #0F172A;
+    --buiten-muted: #64748B;
+    --buiten-primary: #0EA5E9;
+    --buiten-accent: #0F766E;
+    --buiten-border: #E2E8F0;
+    --buiten-danger: #DC2626;
+    --buiten-warn: #D97706;
+    --buiten-success: #16A34A;
+
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2.5rem;
+    --space-xl: 4rem;
+    --space-2xl: 7rem;
+
+    --radius: 0.5rem;
+    --radius-lg: 1rem;
+
+    --shadow-card: 0 1px 3px rgba(15,23,42,0.06), 0 4px 16px rgba(15,23,42,0.04);
+    --shadow-hover: 0 4px 20px rgba(15,23,42,0.10);
+
+    --transition: 0.18s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--buiten-bg);
+    color: var(--buiten-text);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── PAGE SYSTEM ── */
+  .page { display: none; min-height: 100vh; padding-top: 4rem; }
+  .page.active { display: block; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(248,250,252,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--buiten-border);
+    z-index: 100;
+    height: 4rem;
+  }
+  .nav-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-brand {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--buiten-text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+  .nav-brand span { color: var(--buiten-primary); }
+  .nav-links {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.875rem;
+    color: var(--buiten-muted);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius);
+    transition: color var(--transition), background var(--transition);
+    font-weight: 400;
+  }
+  .nav-links a:hover { color: var(--buiten-text); background: var(--buiten-border); }
+  .nav-links .nav-cta {
+    background: var(--buiten-text);
+    color: #fff;
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 0.8125rem;
+  }
+  .nav-links .nav-cta:hover { background: var(--buiten-primary); color: #fff; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 72rem; margin: 0 auto; padding: 0 var(--space-md); }
+  .container-sm { max-width: 52rem; margin: 0 auto; padding: 0 var(--space-md); }
+
+  /* ── TYPE ── */
+  h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--buiten-text);
+  }
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  h3 { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.01em; }
+  h4 { font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.005em; }
+  p { color: var(--buiten-muted); line-height: 1.7; }
+  p.lead { font-size: 1.1rem; color: var(--buiten-muted); max-width: 54ch; }
+  .label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--buiten-primary);
+    font-family: var(--font-mono);
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.625rem 1.375rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: var(--font-body);
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all var(--transition);
+    line-height: 1;
+  }
+  .btn-primary { background: var(--buiten-text); color: #fff; }
+  .btn-primary:hover { background: var(--buiten-primary); }
+  .btn-outline { background: transparent; color: var(--buiten-text); border: 1px solid var(--buiten-border); }
+  .btn-outline:hover { border-color: var(--buiten-text); }
+  .btn-accent { background: var(--buiten-accent); color: #fff; }
+  .btn-accent:hover { background: #0d5e56; }
+  .btn-lg { padding: 0.75rem 1.75rem; font-size: 0.9375rem; }
+  .btn-sm { padding: 0.4rem 0.875rem; font-size: 0.8125rem; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--buiten-surface);
+    border: 1px solid var(--buiten-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--transition), transform var(--transition);
+  }
+  .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+
+  /* ── GRIDS ── */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: var(--space-md); }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--space-md); }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--space-sm); }
+
+  /* ── SECTIONS ── */
+  section { padding: var(--space-2xl) 0; }
+  section + section { padding-top: 0; }
+  .section-header { margin-bottom: var(--space-xl); }
+  .section-header .label { margin-bottom: var(--space-xs); }
+  .section-divider { border: none; border-top: 1px solid var(--buiten-border); margin: 0; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: var(--space-2xl) 0 var(--space-xl);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -8rem;
+    right: -10rem;
+    width: 36rem;
+    height: 36rem;
+    background: radial-gradient(circle, rgba(14,165,233,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(14,165,233,0.08);
+    border: 1px solid rgba(14,165,233,0.18);
+    border-radius: 2rem;
+    padding: 0.25rem 0.875rem;
+    margin-bottom: var(--space-md);
+  }
+  .hero-kicker .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--buiten-primary);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; }
+    50% { opacity:0.4; }
+  }
+  .hero-actions { display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-top: var(--space-lg); }
+
+  /* ── WHAT IS / ISN'T ── */
+  .is-isnt { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+  @media (max-width: 640px) { .is-isnt { grid-template-columns: 1fr; } }
+  .isnt-card { background: #FEF2F2; border-color: #FECACA; }
+  .is-card { background: #F0FDF4; border-color: #BBF7D0; }
+  .check-item, .x-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.625rem;
+    color: var(--buiten-text);
+  }
+  .check-item .icon { color: var(--buiten-success); font-size: 0.875rem; margin-top: 0.15rem; }
+  .x-item .icon { color: var(--buiten-danger); font-size: 0.875rem; margin-top: 0.15rem; }
+
+  /* ── FLOW STEPS ── */
+  .flow-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0;
+    position: relative;
+  }
+  .flow-step {
+    padding: var(--space-md);
+    position: relative;
+    text-align: center;
+  }
+  .flow-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--buiten-border);
+    font-size: 1.25rem;
+    z-index: 1;
+  }
+  .step-num {
+    display: inline-flex;
+    width: 2rem; height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--buiten-primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+  }
+
+  /* ── ECOSYSTEM STRIP ── */
+  .ecosystem-strip {
+    background: var(--buiten-surface);
+    border-top: 1px solid var(--buiten-border);
+    border-bottom: 1px solid var(--buiten-border);
+    padding: var(--space-lg) 0;
+  }
+  .ecosystem-items {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .eco-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--buiten-muted);
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0.375rem 0;
+    transition: color var(--transition);
+  }
+  .eco-item:hover { color: var(--buiten-text); }
+  .eco-item.active { color: var(--buiten-primary); font-weight: 500; }
+  .eco-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--buiten-border);
+  }
+  .eco-item.active .eco-dot { background: var(--buiten-primary); }
+
+  /* ── MODULE CARD ── */
+  .module-tag {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+    background: rgba(14,165,233,0.1);
+    color: var(--buiten-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── TRUST LIST ── */
+  .trust-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--buiten-border);
+  }
+  .trust-row:last-child { border-bottom: none; }
+  .trust-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background: var(--buiten-bg);
+    border: 1px solid var(--buiten-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* ── USE CASE CARD ── */
+  .usecase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    gap: var(--space-md);
+  }
+  .usecase-section {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--buiten-border);
+  }
+  .usecase-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .usecase-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--buiten-muted);
+    margin-bottom: 0.25rem;
+    font-family: var(--font-mono);
+  }
+  .usecase-text { font-size: 0.9rem; color: var(--buiten-text); line-height: 1.55; }
+
+  /* ── CONTACT FORM ── */
+  .form-group { margin-bottom: var(--space-md); }
+  label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--buiten-text); margin-bottom: 0.375rem; }
+  input, select, textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--buiten-border);
+    border-radius: var(--radius);
+    background: var(--buiten-surface);
+    color: var(--buiten-text);
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--buiten-primary);
+    box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+  }
+  textarea { resize: vertical; min-height: 8rem; }
+
+  /* ── DEMO PAGE ── */
+  .demo-disclaimer {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: var(--space-md);
+    border-radius: var(--radius);
+    margin-bottom: var(--space-sm);
+    font-size: 0.875rem;
+    color: var(--buiten-text);
+    border-width: 1px;
+    border-style: solid;
+  }
+  .disclaimer-warn { background: #FFFBEB; border-color: #FDE68A; }
+  .disclaimer-info { background: #F0F9FF; border-color: #BAE6FD; }
+  .disclaimer-req  { background: #FFF7ED; border-color: #FDBA74; }
+  .disclaimer-icon { font-size: 1.1rem; margin-top: 0.05rem; flex-shrink: 0; }
+
+  /* ── ABOUT ── */
+  .buiten-quote {
+    font-size: 1.25rem;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--buiten-text);
+    border-left: 3px solid var(--buiten-primary);
+    padding-left: var(--space-md);
+    margin: var(--space-lg) 0;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--buiten-text);
+    color: rgba(255,255,255,0.5);
+    padding: var(--space-xl) 0 var(--space-lg);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+  @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--space-lg); } }
+  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-brand {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  .footer-brand span { color: var(--buiten-primary); }
+  .footer-desc { font-size: 0.8125rem; line-height: 1.7; }
+  .footer-col h5 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 0.875rem;
+    font-family: var(--font-mono);
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.5rem; }
+  .footer-col ul li a {
+    font-size: 0.8125rem;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--transition);
+  }
+  .footer-col ul li a:hover { color: #fff; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: var(--space-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .footer-bottom p { font-size: 0.75rem; }
+  .footer-disclaimer {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    font-style: italic;
+  }
+
+  /* ── SIGNAL BADGE ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    border: 1px solid;
+  }
+  .badge-green { background: #F0FDF4; border-color: #86EFAC; color: #15803D; }
+  .badge-yellow { background: #FEFCE8; border-color: #FDE047; color: #A16207; }
+  .badge-red { background: #FEF2F2; border-color: #FCA5A5; color: #B91C1C; }
+  .badge-blue { background: #F0F9FF; border-color: #7DD3FC; color: #0369A1; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-up { animation: fadeUp 0.5s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+
+  /* ── UTILITY ── */
+  .mt-sm { margin-top: var(--space-sm); }
+  .mt-md { margin-top: var(--space-md); }
+  .mt-lg { margin-top: var(--space-lg); }
+  .mt-xl { margin-top: var(--space-xl); }
+  .mb-sm { margin-bottom: var(--space-sm); }
+  .mb-md { margin-bottom: var(--space-md); }
+  .mb-lg { margin-bottom: var(--space-lg); }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--buiten-muted); }
+  .text-sm { font-size: 0.875rem; }
+  .mono { font-family: var(--font-mono); }
+  .flex { display: flex; }
+  .gap-sm { gap: var(--space-sm); }
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .surface-alt { background: var(--buiten-bg); }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .flow-step:not(:last-child)::after { display: none; }
+    .flow-steps { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" onclick="showPage('home')">Buiten<span>Claims</span></a>
+    <ul class="nav-links">
+      <li><a onclick="showPage('product')">Product</a></li>
+      <li><a onclick="showPage('how-it-works')">How it works</a></li>
+      <li><a onclick="showPage('use-cases')">Use cases</a></li>
+      <li><a onclick="showPage('trust-compliance')">Trust & Compliance</a></li>
+      <li><a onclick="showPage('about')">About</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+      <li><a class="nav-cta" onclick="showPage('demo')">Live Demo →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-kicker animate-up">
+        <span class="dot"></span>
+        <span class="label" style="font-size:0.6875rem; letter-spacing: 0.08em; color: var(--buiten-primary);">Payer-side claims audit · Decision support</span>
+      </div>
+      <h1 class="animate-up delay-1" style="max-width: 20ch;">BuitenClaims — Evidence-first claims review for cross-border care</h1>
+      <p class="lead mt-md animate-up delay-2">Validate invoices against clinical documentation, generate audit-ready summaries, and reduce disputes — without replacing human decision-making.</p>
+      <div class="hero-actions animate-up delay-3">
+        <button class="btn btn-primary btn-lg" onclick="showPage('contact')">Request a demo →</button>
+        <button class="btn btn-outline btn-lg" onclick="showPage('demo')">Open prototype</button>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="grid-3 mt-xl animate-up delay-4">
+        <div class="card">
+          <div class="module-tag">01 · Consistency</div>
+          <h3>Clinical ↔ Invoice consistency</h3>
+          <p class="mt-sm">Maps submitted procedure codes and line items against clinical documentation to surface discrepancies before manual review.</p>
+        </div>
+        <div class="card">
+          <div class="module-tag">02 · Integrity</div>
+          <h3>Documentation completeness & integrity</h3>
+          <p class="mt-sm">Scores case files against minimum dataset requirements, flagging missing, incomplete, or internally inconsistent records.</p>
+        </div>
+        <div class="card">
+          <div class="module-tag">03 · Governance</div>
+          <h3>Complication & governance signals</h3>
+          <p class="mt-sm">Identifies complication patterns, readmission risk indicators, and escalation triggers for structured specialist review.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- What it is / isn't -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Scope</div>
+        <h2>What BuitenClaims is — and what it is not</h2>
+        <p class="lead mt-sm">Precision in positioning matters. The following boundaries define the product's legitimate scope.</p>
+      </div>
+      <div class="is-isnt">
+        <div class="card is-card">
+          <h4 style="color: var(--buiten-success); margin-bottom: var(--space-md);">✓ It is</h4>
+          <div class="check-item"><span class="icon">✓</span><span>Claims review and audit <strong>decision support</strong> for payers and insurers</span></div>
+          <div class="check-item"><span class="icon">✓</span><span>Invoice validation against clinical documentation</span></div>
+          <div class="check-item"><span class="icon">✓</span><span>Documentation completeness and integrity scoring</span></div>
+          <div class="check-item"><span class="icon">✓</span><span>Structured, exportable audit-ready reporting</span></div>
+          <div class="check-item"><span class="icon">✓</span><span>Cross-border clinical comparability support</span></div>
+          <div class="check-item"><span class="icon">✓</span><span>A tool that supports — not replaces — qualified human reviewers</span></div>
+        </div>
+        <div class="card isnt-card">
+          <h4 style="color: var(--buiten-danger); margin-bottom: var(--space-md);">✕ It is not</h4>
+          <div class="x-item"><span class="icon">✕</span><span>An automated claim approval or denial system</span></div>
+          <div class="x-item"><span class="icon">✕</span><span>A replacement for human clinical or legal decision-making</span></div>
+          <div class="x-item"><span class="icon">✕</span><span>A medical diagnosis or clinical recommendation tool</span></div>
+          <div class="x-item"><span class="icon">✕</span><span>A medical tourism platform or patient-facing service</span></div>
+          <div class="x-item"><span class="icon">✕</span><span>A standardisation mandate — structured comparability only</span></div>
+          <div class="x-item"><span class="icon">✕</span><span>A substitute for legal, regulatory, or actuarial expertise</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- See it in action -->
+  <section style="background: var(--buiten-surface);">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="label">Workflow</div>
+        <h2>See it in action</h2>
+        <p class="mt-sm" style="margin: 0 auto;">Four structured steps from case intake to audit-ready export.</p>
+      </div>
+      <div class="card" style="padding: var(--space-lg) 0;">
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="step-num">01</div>
+            <h4>Intake</h4>
+            <p class="text-sm mt-sm">Upload case file: invoice, clinical record, referral documentation.</p>
+          </div>
+          <div class="flow-step">
+            <div class="step-num">02</div>
+            <h4>Validate</h4>
+            <p class="text-sm mt-sm">Rules engine and model signals check consistency, completeness, and anomalies.</p>
+          </div>
+          <div class="flow-step">
+            <div class="step-num">03</div>
+            <h4>Human Review</h4>
+            <p class="text-sm mt-sm">Qualified claims specialist reviews flags with full audit trail context.</p>
+          </div>
+          <div class="flow-step">
+            <div class="step-num">04</div>
+            <h4>Export</h4>
+            <p class="text-sm mt-sm">Structured audit-decision report exported as PDF or JSON for records.</p>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-lg">
+        <button class="btn btn-accent btn-lg" onclick="showPage('demo')">Launch prototype →</button>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- Ecosystem Strip -->
+  <div class="ecosystem-strip">
+    <div class="container">
+      <p class="text-sm text-muted text-center mb-md" style="text-align:center; margin-bottom: 1.25rem;">Part of the Buiten ecosystem for cross-border healthcare governance</p>
+      <div class="ecosystem-items">
+        <a href="https://buiten.ai" target="_blank" class="eco-item">
+          <span class="eco-dot"></span>
+          <span><strong style="color: var(--buiten-text);">Buiten.ai</strong> — Platform</span>
+        </a>
+        <a href="https://buitenscore.com" target="_blank" class="eco-item">
+          <span class="eco-dot"></span>
+          <span><strong style="color: var(--buiten-text);">BuitenScore</strong> — Provider compliance</span>
+        </a>
+        <a href="https://buitenarts.com" target="_blank" class="eco-item">
+          <span class="eco-dot"></span>
+          <span><strong style="color: var(--buiten-text);">BuitenArts</strong> — Referral continuity</span>
+        </a>
+        <span class="eco-item active">
+          <span class="eco-dot"></span>
+          <span><strong>BuitenClaims</strong> — Payer audit support</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: PRODUCT
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-product">
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Product</div>
+        <h1>Structured decision support for claims review</h1>
+        <p class="lead mt-md">BuitenClaims is a modular, payer-side audit assistance platform. Each module generates structured signals to support qualified human reviewers — not to replace them.</p>
+      </div>
+
+      <!-- Modules -->
+      <div class="label mb-md">Modules</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="module-tag">Module A</div>
+          <h3>Case intake & minimum dataset validation</h3>
+          <p class="mt-sm">Validates that submitted case files meet the minimum documentation threshold before full review begins. Flags missing records, incomplete referral chains, and structural gaps in the submission package.</p>
+          <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+            <span class="badge badge-blue">File completeness</span>
+            <span class="badge badge-blue">Submission check</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="module-tag">Module B</div>
+          <h3>Clinical–invoice mapping assistance</h3>
+          <p class="mt-sm">Cross-references procedure codes, DRG assignments, and billed line items against clinical notes, operative records, and discharge summaries. Surfaces alignment gaps for human specialist review.</p>
+          <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+            <span class="badge badge-blue">Procedure matching</span>
+            <span class="badge badge-blue">DRG consistency</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="module-tag">Module C</div>
+          <h3>Line-item anomaly detection</h3>
+          <p class="mt-sm">Applies configurable rules and model signals to individual invoice line items. Detects statistical outliers, duplicate billing patterns, and items that deviate from jurisdiction-specific reference benchmarks.</p>
+          <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+            <span class="badge badge-yellow">Outlier detection</span>
+            <span class="badge badge-yellow">Duplicate flags</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="module-tag">Module D</div>
+          <h3>Documentation integrity scoring</h3>
+          <p class="mt-sm">Produces a structured integrity score across five dimensions: completeness, internal consistency, temporal coherence, signatory validity, and cross-document alignment. Each dimension is individually auditable.</p>
+          <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+            <span class="badge badge-blue">Integrity score</span>
+            <span class="badge badge-blue">5-dimension audit</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="module-tag">Module E</div>
+          <h3>Complication governance signals</h3>
+          <p class="mt-sm">Identifies complication indicators, unplanned readmission patterns, and escalation criteria that require specialist governance review. Does not diagnose — surfaces documented signals from the clinical record.</p>
+          <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+            <span class="badge badge-red">Complication flags</span>
+            <span class="badge badge-red">Readmission risk</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="module-tag">Module F</div>
+          <h3>Exportable audit decision support report</h3>
+          <p class="mt-sm">Generates a structured, audit-ready report summarising all module outputs. Available as PDF for archival and as JSON for integration with existing claims management systems.</p>
+          <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+            <span class="badge badge-green">PDF export</span>
+            <span class="badge badge-green">JSON / API</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="mt-xl">
+        <div class="label mb-md">Structured outputs</div>
+        <div class="card">
+          <div class="grid-4">
+            <div>
+              <h4>Case summary</h4>
+              <p class="text-sm mt-sm">Structured overview of the case: patient journey, submitted procedures, provider context, and cross-border jurisdiction flags.</p>
+            </div>
+            <div>
+              <h4>Flags & explanation</h4>
+              <p class="text-sm mt-sm">Each flag includes a plain-language explanation, the source data point that triggered it, and a severity classification.</p>
+            </div>
+            <div>
+              <h4>Evidence references</h4>
+              <p class="text-sm mt-sm">Every signal is anchored to a specific document, page, or data element — enabling reviewers to verify independently.</p>
+            </div>
+            <div>
+              <h4>Suggested review level</h4>
+              <p class="text-sm mt-sm">Recommends a triage level: routine, elevated, or specialist escalation. The final decision remains with the human reviewer.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-xl text-center">
+        <p class="text-sm text-muted mb-md" style="margin-bottom: 1rem;">See the product in action in the sandbox prototype</p>
+        <button class="btn btn-primary btn-lg" onclick="showPage('demo')">Open prototype →</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: HOW IT WORKS
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-how-it-works">
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Process</div>
+        <h1>How BuitenClaims works</h1>
+        <p class="lead mt-md">Four structured steps. Full explainability. Human oversight at every decision point.</p>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="card mb-md">
+        <div style="display:flex; gap: var(--space-lg); align-items: flex-start; flex-wrap: wrap;">
+          <div style="flex-shrink:0;">
+            <div class="step-num" style="width:3rem; height:3rem; font-size:1rem;">01</div>
+          </div>
+          <div style="flex:1; min-width:16rem;">
+            <h2>Upload or integrate</h2>
+            <p class="mt-sm">Submit a case file via the secure web interface or structured API. A case file typically contains: the submitted invoice, clinical documentation (operative notes, discharge summary, imaging reports), referral records, and provider-side identifiers.</p>
+            <p class="mt-sm">BuitenClaims accepts structured JSON payloads and PDF document bundles. Integration with existing claims management systems is available via documented API. All data is handled under strict GDPR-compliant data minimisation principles.</p>
+            <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+              <span class="badge badge-blue">API integration</span>
+              <span class="badge badge-blue">Web interface</span>
+              <span class="badge badge-green">GDPR-compliant</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="card mb-md">
+        <div style="display:flex; gap: var(--space-lg); align-items: flex-start; flex-wrap: wrap;">
+          <div style="flex-shrink:0;">
+            <div class="step-num" style="width:3rem; height:3rem; font-size:1rem;">02</div>
+          </div>
+          <div style="flex:1; min-width:16rem;">
+            <h2>Validation engine</h2>
+            <p class="mt-sm">The validation engine runs two parallel processes. First, a deterministic rules layer applies jurisdiction-configured thresholds, minimum dataset requirements, and known billing integrity rules. Second, model signals are applied to detect statistical patterns, anomalies, and documentation inconsistencies that fall outside the deterministic ruleset.</p>
+            <p class="mt-sm">Both layers produce explicit, auditable outputs. No signal is generated without a referenced source data point. The engine does not make decisions — it produces structured, ranked observations for human review.</p>
+            <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+              <span class="badge badge-blue">Rules engine</span>
+              <span class="badge badge-blue">Model signals</span>
+              <span class="badge badge-green">Fully explainable</span>
+              <span class="badge badge-green">Source-anchored</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="card mb-md">
+        <div style="display:flex; gap: var(--space-lg); align-items: flex-start; flex-wrap: wrap;">
+          <div style="flex-shrink:0;">
+            <div class="step-num" style="width:3rem; height:3rem; font-size:1rem;">03</div>
+          </div>
+          <div style="flex:1; min-width:16rem;">
+            <h2>Human claims specialist review</h2>
+            <p class="mt-sm">BuitenClaims is designed as decision support — the human reviewer is the decision-maker. A qualified claims specialist reviews the structured flag report, verifies signal references against source documents, and exercises professional judgement on each flagged item.</p>
+            <p class="mt-sm">The platform provides a structured review workspace where specialists can annotate flags, record their reasoning, and escalate to medical or legal reviewers as appropriate. Every action is logged to a tamper-evident audit trail.</p>
+            <div class="mt-md">
+              <p class="text-sm" style="font-style:italic; color: var(--buiten-accent); font-weight: 500;">Human oversight is not optional. No claim decision is recorded without specialist confirmation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="card">
+        <div style="display:flex; gap: var(--space-lg); align-items: flex-start; flex-wrap: wrap;">
+          <div style="flex-shrink:0;">
+            <div class="step-num" style="width:3rem; height:3rem; font-size:1rem;">04</div>
+          </div>
+          <div style="flex:1; min-width:16rem;">
+            <h2>Structured audit export</h2>
+            <p class="mt-sm">Upon completion of specialist review, a structured audit decision support report is generated. The report documents: all signals identified, the specialist's recorded review actions, evidence references for each flagged item, the final triage determination, and a complete case audit trail.</p>
+            <p class="mt-sm">Reports are exported as PDF for archival and dispute resolution, and as JSON for integration with claims management systems, reinsurance reporting, and regulatory submissions.</p>
+            <div class="mt-md flex gap-sm" style="flex-wrap:wrap;">
+              <span class="badge badge-green">PDF / JSON export</span>
+              <span class="badge badge-green">Full audit trail</span>
+              <span class="badge badge-blue">Dispute-ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: USE CASES
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-use-cases">
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Use cases</div>
+        <h1>Where BuitenClaims adds structured value</h1>
+        <p class="lead mt-md">Specific claims review scenarios where documentation complexity, cross-border context, or dispute risk make structured audit support essential.</p>
+      </div>
+
+      <div class="usecase-grid">
+
+        <!-- Use case 1 -->
+        <div class="card">
+          <div class="module-tag">Use case 01</div>
+          <h3 style="margin-bottom: var(--space-md);">Cross-border elective procedures</h3>
+          <div class="usecase-section">
+            <div class="usecase-label">Challenge</div>
+            <p class="usecase-text">Elective procedures performed across jurisdictions — orthopaedic, cardiac, ophthalmic — involve heterogeneous documentation standards, different coding systems, and provider networks operating under non-domestic governance frameworks. Manual review is time-intensive and difficult to standardise.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">What BuitenClaims checks</div>
+            <p class="usecase-text">Cross-referencing of procedure codes against local and receiving-country clinical records; minimum dataset completeness for cross-border reimbursement; consistency between referral documentation and actual billed procedures; provider credentialing signal.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">Output generated</div>
+            <p class="usecase-text">Structured consistency report; documentation completeness score; jurisdiction comparability flag; recommended review level for specialist escalation.</p>
+          </div>
+        </div>
+
+        <!-- Use case 2 -->
+        <div class="card">
+          <div class="module-tag">Use case 02</div>
+          <h3 style="margin-bottom: var(--space-md);">High-cost implants & devices</h3>
+          <div class="usecase-section">
+            <div class="usecase-label">Challenge</div>
+            <p class="usecase-text">Implantable device claims are a high-value audit area. Billed device costs frequently exceed reference price benchmarks, and documentation of device selection rationale, usage confirmation, and implant registration is inconsistently provided.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">What BuitenClaims checks</div>
+            <p class="usecase-text">Line-item device cost against configurable benchmark ranges; device identifier (UDI) presence in clinical documentation; implant use confirmation in operative records; reference pricing deviation flags.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">Output generated</div>
+            <p class="usecase-text">Device cost anomaly flag with reference range; documentation presence check; operative confirmation signal; priority flag for specialist cost review.</p>
+          </div>
+        </div>
+
+        <!-- Use case 3 -->
+        <div class="card">
+          <div class="module-tag">Use case 03</div>
+          <h3 style="margin-bottom: var(--space-md);">Complication readmissions</h3>
+          <div class="usecase-section">
+            <div class="usecase-label">Challenge</div>
+            <p class="usecase-text">Unplanned readmissions following elective procedures represent both clinical and financial risk. Determining whether a readmission was clinically indicated, preventable, or attributable to the original provider requires careful documentation review across two or more separate episode records.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">What BuitenClaims checks</div>
+            <p class="usecase-text">Temporal proximity of readmission to primary procedure; complication indicator codes in the readmission record; clinical narrative consistency between primary discharge and readmission admission documentation; duplicate billing signals across episodes.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">Output generated</div>
+            <p class="usecase-text">Complication governance signal; episode linkage analysis; readmission attribution flag; escalation recommendation for clinical governance review.</p>
+          </div>
+        </div>
+
+        <!-- Use case 4 -->
+        <div class="card">
+          <div class="module-tag">Use case 04</div>
+          <h3 style="margin-bottom: var(--space-md);">Provider dispute preparation</h3>
+          <div class="usecase-section">
+            <div class="usecase-label">Challenge</div>
+            <p class="usecase-text">When a payer disputes a claim, the burden of structured, evidence-based documentation falls on the claims team. Ad hoc review notes and informal query records are insufficient for formal dispute or arbitration proceedings.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">What BuitenClaims checks</div>
+            <p class="usecase-text">Full re-run of validation engine across disputed claim; evidence anchoring for each flagged item; specialist review annotation retrieval; audit trail completeness verification.</p>
+          </div>
+          <div class="usecase-section">
+            <div class="usecase-label">Output generated</div>
+            <p class="usecase-text">Formally structured dispute-support report (PDF); complete audit trail export (JSON); evidence-referenced flag summary suitable for legal or arbitration use.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: TRUST & COMPLIANCE
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-trust-compliance">
+  <section>
+    <div class="container-sm">
+      <div class="section-header">
+        <div class="label">Trust & Compliance</div>
+        <h1>Governance-first by design</h1>
+        <p class="lead mt-md">BuitenClaims is built for regulated environments. Every design choice — from data handling to decision logic — reflects the requirements of healthcare payer governance and European data regulation.</p>
+      </div>
+
+      <div class="trust-row">
+        <div class="trust-icon">🔒</div>
+        <div>
+          <h3>GDPR-first data minimisation</h3>
+          <p class="mt-sm">Only data elements required for the specific validation function are processed. Identifiable patient data is pseudonymised at intake. Data retention policies are configurable per jurisdiction and contractual requirement. BuitenClaims does not retain processed case data beyond the agreed retention window.</p>
+        </div>
+      </div>
+
+      <div class="trust-row">
+        <div class="trust-icon">👤</div>
+        <div>
+          <h3>Role-based access control</h3>
+          <p class="mt-sm">Access to case data, review interfaces, and export functions is gated by configurable role assignments. Typical roles include: intake operator, claims reviewer, senior specialist, compliance officer, and API service account. No cross-role data access without explicit authorisation. All role assignments are logged.</p>
+        </div>
+      </div>
+
+      <div class="trust-row">
+        <div class="trust-icon">📋</div>
+        <div>
+          <h3>Logging & audit trail</h3>
+          <p class="mt-sm">Every system action — file upload, validation run, flag acknowledgement, reviewer annotation, export event — is recorded to a tamper-evident, append-only audit log. Logs are exportable for internal compliance review and external audit purposes. Log integrity is verifiable.</p>
+        </div>
+      </div>
+
+      <div class="trust-row">
+        <div class="trust-icon">🧑‍⚖️</div>
+        <div>
+          <h3>Human oversight requirement</h3>
+          <p class="mt-sm">The system architecture enforces human oversight. No claim decision is recorded without a qualified specialist review action. The validation engine produces signals and flags — it does not produce decisions. Reviewer identity and review timestamp are embedded in every exported report.</p>
+        </div>
+      </div>
+
+      <div class="trust-row">
+        <div class="trust-icon">🔍</div>
+        <div>
+          <h3>Transparent decision support</h3>
+          <p class="mt-sm">Every flag produced by the validation engine is accompanied by: the specific rule or model signal that triggered it; the source data element that is in question; a plain-language explanation; and a severity classification. There are no black-box outputs. Reviewers can verify every signal independently against source documentation.</p>
+        </div>
+      </div>
+
+      <div class="trust-row">
+        <div class="trust-icon">⛔</div>
+        <div>
+          <h3>No automated approval or denial</h3>
+          <p class="mt-sm">BuitenClaims does not approve, deny, or adjudicate claims. It does not produce a recommendation to pay or reject. It produces structured audit support signals for qualified human decision-makers. This boundary is architectural, not merely policy — the system has no approval or denial output state.</p>
+        </div>
+      </div>
+
+      <div class="card mt-xl" style="background: var(--buiten-text); border-color: transparent;">
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: var(--space-sm);">Security documentation</p>
+        <h3 style="color: #fff;">Security documentation available under NDA</h3>
+        <p style="color: rgba(255,255,255,0.6); margin-top: var(--space-sm);">Full security architecture documentation, data processing agreements, and penetration testing records are available to qualified institutional prospects under non-disclosure agreement.</p>
+        <button class="btn btn-outline mt-md" style="color: #fff; border-color: rgba(255,255,255,0.25);" onclick="showPage('contact')">Request security documentation →</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: ABOUT
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <section>
+    <div class="container-sm">
+      <div class="section-header">
+        <div class="label">About</div>
+        <h1>The Buiten ecosystem</h1>
+      </div>
+
+      <p class="lead">Buiten is a European health data infrastructure initiative building the operational layer for cross-border healthcare governance. The ecosystem consists of four interconnected modules, each addressing a distinct structural challenge in the cross-border care pathway.</p>
+
+      <div class="buiten-quote">
+        "Structured comparability — not standardisation."
+      </div>
+
+      <p>Buiten does not attempt to impose a single documentation or coding standard across diverse healthcare systems. Instead, it builds the structured comparability layer that allows different systems to be understood in relation to one another — preserving local clinical autonomy while enabling meaningful cross-jurisdiction audit and governance.</p>
+
+      <div class="grid-2 mt-xl">
+        <div class="card">
+          <h4>Buiten.ai</h4>
+          <p class="text-sm mt-sm">The core platform layer. Provides the shared data infrastructure, identity, and API framework that connects the ecosystem modules.</p>
+          <a href="https://buiten.ai" target="_blank" class="btn btn-outline btn-sm mt-md">buiten.ai →</a>
+        </div>
+        <div class="card">
+          <h4>BuitenScore</h4>
+          <p class="text-sm mt-sm">Provider compliance and quality signalling. Generates structured quality scores for healthcare providers operating in or serving cross-border patient populations.</p>
+          <a href="https://buitenscore.com" target="_blank" class="btn btn-outline btn-sm mt-md">buitenscore.com →</a>
+        </div>
+        <div class="card">
+          <h4>BuitenArts</h4>
+          <p class="text-sm mt-sm">Referral continuity and care pathway documentation. Supports structured referral records and continuity-of-care documentation across institutional and national boundaries.</p>
+          <a href="https://buitenarts.com" target="_blank" class="btn btn-outline btn-sm mt-md">buitenarts.com →</a>
+        </div>
+        <div class="card" style="border-color: var(--buiten-primary); background: rgba(14,165,233,0.04);">
+          <h4>BuitenClaims</h4>
+          <p class="text-sm mt-sm">Payer-side audit decision support. Validates invoices against clinical documentation and generates structured, explainable signals for qualified human claims reviewers.</p>
+          <span class="badge badge-blue mt-md" style="display:inline-flex;">Current module</span>
+        </div>
+      </div>
+
+      <div class="mt-xl">
+        <h2 style="margin-bottom: var(--space-md);">BuitenClaims as payer-side module</h2>
+        <p>BuitenClaims is explicitly designed for payer and insurer operations. It is not a provider-facing tool, not a patient-facing service, and not a medical tourism platform. Its sole function is to support the claims review and audit process on the payer side of the cross-border care transaction.</p>
+        <p class="mt-sm">The module is built to operate within existing claims workflows — augmenting, not disrupting, the expertise of qualified claims professionals. Institutions retain full control of decision-making, data governance, and audit processes. BuitenClaims provides the structured, explainable signal layer that makes those processes faster, more consistent, and more defensible.</p>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: CONTACT
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-contact">
+  <section>
+    <div class="container-sm">
+      <div class="section-header">
+        <div class="label">Contact</div>
+        <h1>Get in touch</h1>
+        <p class="lead mt-md">BuitenClaims is available for qualified payers, insurers, reinsurers, and health system procurement teams. Request a demonstration, a scoped pilot proposal, or security documentation.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-xl); align-items: start; flex-wrap: wrap;">
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-lg);">Request a demo or proposal</h3>
+          <form onsubmit="handleContactSubmit(event)">
+            <div class="form-group">
+              <label for="org-type">Organisation type</label>
+              <select id="org-type" required>
+                <option value="" disabled selected>Select organisation type</option>
+                <option>Health insurer</option>
+                <option>Reinsurer</option>
+                <option>Third-party administrator</option>
+                <option>Health system / Payer</option>
+                <option>Government / Regulatory body</option>
+                <option>Consulting / Advisory</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input type="text" id="country" placeholder="e.g. Netherlands, Germany, Belgium…" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" id="email" placeholder="your@organisation.eu" required />
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" placeholder="Describe your use case, team size, or what you would like to explore with BuitenClaims…" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Send enquiry →</button>
+          </form>
+          <p class="text-sm text-muted mt-md" style="margin-top: 1rem; font-style: italic;">Security documentation available under NDA upon request.</p>
+        </div>
+
+        <div>
+          <div class="card mb-md">
+            <h4>Response time</h4>
+            <p class="text-sm mt-sm">Qualified institutional enquiries receive a response within 2 business days. We do not accept unsolicited sales or partnership enquiries via this form.</p>
+          </div>
+          <div class="card mb-md">
+            <h4>What to expect</h4>
+            <p class="text-sm mt-sm">An initial scoping call to understand your claims review context. A tailored demonstration of relevant modules. A pilot proposal with defined scope, data handling terms, and integration pathway.</p>
+          </div>
+          <div class="card">
+            <h4>Security & NDA</h4>
+            <p class="text-sm mt-sm">Full security architecture documentation, DPA templates, and penetration testing records are available to serious institutional prospects under mutual non-disclosure agreement.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE: DEMO
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-demo">
+  <section>
+    <div class="container-sm">
+      <div class="section-header text-center">
+        <div class="label">Prototype · Sandbox environment</div>
+        <h1 style="margin-top: var(--space-xs);">BuitenClaims Assistant</h1>
+        <p class="lead mt-md" style="margin: 0 auto;">Case-file validation & audit report generation — sandbox environment for evaluation purposes.</p>
+      </div>
+
+      <!-- Disclaimers -->
+      <div class="mt-xl">
+        <div class="demo-disclaimer disclaimer-warn">
+          <span class="disclaimer-icon">⚠️</span>
+          <div>
+            <strong>Sandbox only — do not upload real patient data.</strong>
+            <p class="text-sm mt-sm" style="color: var(--buiten-text);">This prototype environment is for evaluation and demonstration purposes only. It is not connected to production infrastructure. Do not submit identifiable or real patient information under any circumstances. Use only synthetic or anonymised test data.</p>
+          </div>
+        </div>
+        <div class="demo-disclaimer disclaimer-info">
+          <span class="disclaimer-icon">ℹ️</span>
+          <div>
+            <strong>Decision support only — not automated approval or denial.</strong>
+            <p class="text-sm mt-sm" style="color: var(--buiten-text);">BuitenClaims produces structured audit signals and recommendations for qualified human reviewers. It does not approve, reject, or adjudicate claims. Every output requires specialist review before any decision is recorded.</p>
+          </div>
+        </div>
+        <div class="demo-disclaimer disclaimer-req">
+          <span class="disclaimer-icon">👤</span>
+          <div>
+            <strong>Human oversight required.</strong>
+            <p class="text-sm mt-sm" style="color: var(--buiten-text);">All outputs from this system — including in the prototype environment — are preliminary signals intended to support, not replace, qualified human judgement. Do not act on prototype outputs in any operational context.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="card mt-xl text-center" style="padding: var(--space-xl);">
+        <div class="label mb-md">Ready to explore</div>
+        <h2 style="margin-bottom: var(--space-md);">Launch the BuitenClaims prototype</h2>
+        <p style="max-width: 42ch; margin: 0 auto var(--space-lg);">The sandbox environment allows you to upload a synthetic case file and receive a structured validation output, demonstrating the full module workflow.</p>
+        <a href="https://sigorta-robot.vercel.app/" target="_blank" class="btn btn-accent btn-lg">Start demo →</a>
+        <div class="mt-md">
+          <button class="btn btn-outline btn-sm" onclick="showPage('product')">← Back to Product</button>
+        </div>
+      </div>
+
+      <div class="mt-lg card" style="background: rgba(15,118,110,0.04); border-color: rgba(15,118,110,0.2);">
+        <h4 style="color: var(--buiten-accent);">Production access</h4>
+        <p class="text-sm mt-sm">The production environment — with full data governance, role-based access, and institutional API integration — is available to qualified payers under a formal pilot agreement. <button class="btn btn-sm btn-outline" onclick="showPage('contact')" style="display:inline-flex; margin-left: 0.5rem;">Request access</button></p>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer id="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Buiten<span>Claims</span></div>
+        <p class="footer-desc">Evidence-first claims review and audit decision support for cross-border healthcare. Payer-side. Human-in-the-loop. Audit-ready.</p>
+        <div style="margin-top: var(--space-md);">
+          <span class="badge badge-blue" style="font-size:0.65rem;">GDPR-first</span>&nbsp;
+          <span class="badge badge-green" style="font-size:0.65rem;">Human oversight</span>&nbsp;
+          <span class="badge badge-blue" style="font-size:0.65rem;">No automated decisions</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul>
+          <li><a onclick="showPage('product')">Overview</a></li>
+          <li><a onclick="showPage('how-it-works')">How it works</a></li>
+          <li><a onclick="showPage('use-cases')">Use cases</a></li>
+          <li><a onclick="showPage('demo')">Live demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a onclick="showPage('about')">About</a></li>
+          <li><a onclick="showPage('trust-compliance')">Trust & Compliance</a></li>
+          <li><a onclick="showPage('contact')">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Ecosystem</h5>
+        <ul>
+          <li><a href="https://buiten.ai" target="_blank">buiten.ai</a></li>
+          <li><a href="https://buitenscore.com" target="_blank">buitenscore.com</a></li>
+          <li><a href="https://buitenarts.com" target="_blank">buitenarts.com</a></li>
+          <li><a href="https://buitenclaims.com" target="_blank">buitenclaims.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>
+        <p>Privacy &nbsp;·&nbsp; Terms &nbsp;·&nbsp; Security &nbsp;&nbsp;|&nbsp;&nbsp; © 2025 BuitenClaims</p>
+      </div>
+      <p class="footer-disclaimer">Not for emergency use. BuitenClaims is decision support only — not a clinical, legal, or regulatory authority.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════ -->
+<script>
+  const pages = {
+    'home': 'page-home',
+    'product': 'page-product',
+    'how-it-works': 'page-how-it-works',
+    'use-cases': 'page-use-cases',
+    'trust-compliance': 'page-trust-compliance',
+    'about': 'page-about',
+    'contact': 'page-contact',
+    'demo': 'page-demo',
+  };
+
+  function showPage(id) {
+    Object.values(pages).forEach(p => {
+      document.getElementById(p).classList.remove('active');
+    });
+    const target = pages[id];
+    if (target) {
+      document.getElementById(target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function handleContactSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('[type=submit]');
+    btn.textContent = 'Enquiry sent ✓';
+    btn.style.background = 'var(--buiten-success)';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = 'Send enquiry →';
+      btn.style.background = '';
+      btn.disabled = false;
+      e.target.reset();
+    }, 4000);
+  }
+</script>
+
+</body>
+</html>
